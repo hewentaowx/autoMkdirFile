@@ -11,6 +11,14 @@ copyForder = (fromPath, toPath) ->
       paths.forEach (eachPath) ->
         _src = path.join "#{src}", "#{eachPath}"
         _dst = path.join "#{dst}", "#{eachPath}"
+        # 计算相对路径
+        num = (_src.split('/')).length-2
+        if num is 1
+          prefix = '../'
+        else if num is 2
+          prefix = '../../'
+        else if num is 3
+          prefix = '../../../'
         # 判断处理的是一个文件还是一个目录
         fs.stat _src, (err, st) ->
           if err
@@ -19,7 +27,7 @@ copyForder = (fromPath, toPath) ->
           if st.isFile()
             # 创建读取流 读取模板内容用于填充
             text = fs.readFileSync('./test.js').toString()
-            text = text.replace(/targetPath/g, "../../#{_src}")
+            text = text.replace(/targetPath/g, "#{prefix}#{_src}")
             # 创建写入流 将 .coffee 后缀的文件改为 .js 文件
             reg = /.coffee/gi
             new_dst = _dst.replace(reg, '.js')
