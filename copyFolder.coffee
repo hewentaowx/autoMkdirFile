@@ -1,4 +1,5 @@
 fs = require 'fs'
+path = require 'path'
 
 # 文件夹复制
 copyForder = (fromPath, toPath) ->
@@ -7,9 +8,9 @@ copyForder = (fromPath, toPath) ->
     fs.readdir src, (err, paths) ->
       if err
         return err
-      paths.forEach (path) ->
-        _src = "#{src}/#{path}"
-        _dst = "#{dst}/#{path}"
+      paths.forEach (eachPath) ->
+        _src = path.join "#{src}", "#{eachPath}"
+        _dst = path.join "#{dst}", "#{eachPath}"
         # 判断处理的是一个文件还是一个目录
         fs.stat _src, (err, st) ->
           if err
@@ -17,13 +18,15 @@ copyForder = (fromPath, toPath) ->
           # 判断是否为文件
           if st.isFile()
             # 创建读取流 读取模板内容用于填充
-            readable = fs.createReadStream './test.coffee'
+            text = fs.readFileSync('./test.js').toString()
+            text = text.replace(/targetPath/g, "../../#{_src}")
             # 创建写入流 将 .coffee 后缀的文件改为 .js 文件
             reg = /.coffee/gi
             new_dst = _dst.replace(reg, '.js')
             writeable = fs.createWriteStream new_dst
-            # 通过管道来传输流
-            readable.pipe writeable
+            fs.writeFile "#{new_dst}", text, (err) ->
+              if err
+                throw err
           else if st.isDirectory()
             # 如果是目录的话 利用递归调用本身
             exists _src, _dst, copy
