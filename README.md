@@ -6,7 +6,7 @@
 
 * 其中生成的文件引用原始文件的相对路径也可以自动生成
 
-## QuickStart
+# QuickStart
 
 ```
 $ yarn
