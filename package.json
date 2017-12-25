@@ -1,6 +1,10 @@
 {
+  "name": "autoMkdirFile",
+  "version": "0.0.1",
+  "description": "an example for mkdirfile",
   "dependencies": {
     "fs": "^0.0.1-security",
     "path": "^0.12.7"
-  }
+  },
+  "license": "MIT"
 }
